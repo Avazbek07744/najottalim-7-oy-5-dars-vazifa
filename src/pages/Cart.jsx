@@ -5,7 +5,15 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Cart() {
     const { cart, setCart } = useContext(UseCart);
+    const [ tow, setTow ] = useState(false);
     const [token, setToken] = useState(localStorage.getItem('token'))
+    const [jwt, setJwt] = useState(localStorage.getItem('jwt'))
+
+    useEffect(()=>{
+        if (jwt || token) {
+            setTow(true)
+        }
+    },[])
 
     useEffect(() => {
         const storedCart = JSON.parse(localStorage.getItem("cart"));
@@ -15,6 +23,7 @@ function Cart() {
     }, [setCart]);
 
     function remove(id, color) {
+        setTow(false)
         toast("Item removed from cart");
         let copied = [...cart];
         copied = copied.filter((value) => !(value.id === id && value.color === color));
@@ -96,7 +105,7 @@ function Cart() {
                                 <p>Subtotal</p>
                             </div>
                         </div>
-                        <button className="mt-4 w-full py-2 bg-blue-500 text-white rounded-md">Proceed to Checkout</button>
+                        <button className="mt-4 w-full py-2 bg-blue-500 text-white rounded-md uppercase">{tow?'Proceed to Checkout':'please login'}</button>
                     </div>
                 </div>
             ) : (

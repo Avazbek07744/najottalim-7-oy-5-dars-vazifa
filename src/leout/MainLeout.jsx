@@ -8,36 +8,44 @@ const MainLeout = ({ children }) => {
     const { cart, setCart } = useContext(UseCart)
     const [chek, setChek] = useState(0)
     const [tok, setTOk] = useState(false)
+    const [username1, setUsername] = useState('')
     const token = localStorage.getItem("token")
-    const name = JSON.parse(localStorage.getItem("user"))
-    let username1 = name.user.username    
     const jwt = localStorage.getItem("jwt")
     const navigate = useNavigate()
 
-    useEffect(()=>{
+    useEffect(() => {
+        if (localStorage.getItem("user")) {
+            const name = JSON.parse(localStorage.getItem("user"))
+            setUsername(name.user.username)
+        }else{
+            setTOk(false)
+        }
+    }, [])
+    useEffect(() => {
         if (token || jwt) {
             setTOk(true)
         }
-    },[])
+    }, [])
 
     useEffect(() => {
         const totalAmount = cart.reduce((sum, item) => sum + item.amount, 0);
         setChek(totalAmount);
     }, [cart]);
 
-    const hendleHome = ()=>{
+    const hendleHome = () => {
         navigate('/')
     }
 
-    const hendleCart = ()=>{
+    const hendleCart = () => {
         navigate('/cart')
     }
 
-    const hendelLogout = ()=>{
-            navigate('/')
-            localStorage.removeItem('token')
-            localStorage.removeItem('jwt')
-            setTOk(false)
+    const hendelLogout = () => {
+        navigate('/')
+        localStorage.removeItem('token')
+        localStorage.removeItem('user')
+        localStorage.removeItem('jwt')
+        setTOk(false)
     }
 
     return (
@@ -46,17 +54,17 @@ const MainLeout = ({ children }) => {
                 <div className='flex justify-between max-w-[1150px] mx-auto'>
                     <div></div>
                     {
-                        tok?
-                        <div className='flex gap-6 text-sm'>
-                        <NavLink>Hello, {tok?username1:'salom'}</NavLink>
-                        <NavLink onClick={hendelLogout} className={'border border-[#0475FF] text-[#0475FF] px-2 font-semibold rounded-lg'}>LOGOUT</NavLink>
-                    </div>
-                        :
-                        <div className='flex gap-6 text-sm'>
-                        <NavLink to='/login'>Sign in / Guest</NavLink>
-                        <NavLink to='/register'>Create Account</NavLink>
-                    </div>}
-                    
+                        tok ?
+                            <div className='flex gap-6 text-sm'>
+                                <NavLink>Hello, {tok ? username1 : 'salom'}</NavLink>
+                                <NavLink onClick={hendelLogout} className={'border border-[#0475FF] text-[#0475FF] px-2 font-semibold rounded-lg'}>LOGOUT</NavLink>
+                            </div>
+                            :
+                            <div className='flex gap-6 text-sm'>
+                                <NavLink to='/login'>Sign in / Guest</NavLink>
+                                <NavLink to='/register'>Create Account</NavLink>
+                            </div>}
+
                 </div>
             </div>
             <header className='bg-[#F0F6FF]'>
